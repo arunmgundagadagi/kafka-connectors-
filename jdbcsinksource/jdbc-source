@@ -1,0 +1,46 @@
+Source database : postgresql
+Topic : postgres-jdbc
+Table : employees
+
+login into the postgres
+
+sudo -i -u postgres
+Psql
+create user kiran with password 'paswd';
+grant all privileges on database testdb to Arun;
+
+curl -X POST http://localhost:8083/connectors -H
+"Content-Type: application/json" -d '{
+"name": "jdbc_postgresql_source2",
+"config": {
+"connector.class":
+"io.confluent.connect.jdbc.JdbcSourceConnector",
+"tasks.max": "1",
+"connection.url":
+"jdbc:postgresql://127.0.0.1:5432/testdb",
+"connection.user": "Arun",
+"connection.password": "Arun123",
+"table.whitelist": "employees",
+"topic.prefix": "postgres-jdbc",
+"mode":"incrementing",
+"incrementing.column.name": "id",
+"poll.interval.ms": "10000",
+}
+}'
+
+
+Create table employees and insert some values into
+employees
+
+
+Create table employees(id serial PRIVATE KEY, name
+varchar(255) ,department varchar(55), salary int );
+
+INSERT INTO employees (name, department, salary)
+VALUES (‘Arun’, ’IT’ ,40000);
+
+
+Consume messages from the topic 
+
+kafka-console-consumer --bootstrap-server
+localhost:9092 --topic postgres-jdbc --from-beginning
