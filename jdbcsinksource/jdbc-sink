@@ -1,0 +1,42 @@
+sink database : mydatabse
+Topic : mysql-jdbc
+Table : employees
+
+login into the mysql-server using username and psswd 
+sudo -i -u mysql
+
+create post request
+curl -X POST http://localhost:8083/connectors -H
+"Content-Type: application/json" -d '{
+"name": "jdbc_mysqlserver_sink",
+"config": {
+"connector.class":
+"io.confluent.connect.jdbc.JdbcSinkConnector","tasks.max": "1",
+"topics": "mysql-jdbc",
+"connection.url":
+"jdbc:mysql://127.0.0.1:3306/mydatabse",
+"connection.user": "root",
+"connection.password": "root_passwd",
+"auto.create": "true",
+"insert.mode": "insert",
+"pk.mode": "none",
+"fields.whitelist": "name,department,salary",
+"batch.size": "10",
+"value.converter":
+"org.apache.kafka.connect.json.JsonConverter",
+"key.converter":
+"org.apache.kafka.connect.json.JsonConverter",
+"value.convertor.schemas.enable": "false",
+"key.convertor.schemas.enable": "false",
+"table.name.format": "employees"
+}
+}'
+
+create table for sink to 
+
+Create table employees(id serial PRIVATE KEY, name
+varchar(255) ,department varchar(55), salary int );ck
+the
+
+check weather data in table wheather data has been produced or not 
+select * from employees;
