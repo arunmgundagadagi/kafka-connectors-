@@ -1,0 +1,46 @@
+
+
+nano etc/kafka/connect-distributed.properties
+
+Add the following lines
+listeners=http://0.0.0.0:8083
+rest.advertised.host.name=localhost
+rest.advertised.port=8083
+plugin.path=/usr/share/java,/usr/share/filestream-connectors,/usr/local/share/kafka/plugins,/usr/local/share/kafka/plugins/confluentinc-kafka-connect-jdbc-10.8.0
+
+Create a topic to use for testing.
+Create the input and output files.
+
+cd ~/
+touch output.txt
+chmod 777 output.txt
+
+Enter some data into the input file.
+vi input.txt
+
+Create a source connector to import data into Kafka from a file.
+
+curl -X POST http://localhost:8083/connectors \
+-H 'Accept: */*' \
+-H 'Content-Type: application/json' \
+-d '{
+"name": "file_source_connector",
+"config": {
+"connector.class": "org.apache.kafka.connect.file.FileStreamSourceConnector",
+"topic": "connect_topic",
+"file": "/home/charan/input.txt",
+"value.converter": "org.apache.kafka.connect.storage.StringConverter"
+}
+}'
+
+Get information about the source connector.
+
+curl http://localhost:8083/connectors/file_source_connector
+curl http://localhost:8083/connectors/file_source_connector/status
+
+Check the topic to verify the new data has appeared.
+
+kafka-topics --bootstrap-server localhost:9092 --create --topic source-connect --partitions 1 --replication-factor 1
+kafka-console-consumer --bootstrap-server localhost:9092 --topic source-connect --from-beginning
+
+
