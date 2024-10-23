@@ -1,0 +1,24 @@
+Create a sink connector to export data from Kafka to a file.
+
+Previosly we have created the topic and published some topic to the topic using File-Stream-source-connector 
+
+curl -X POST http://localhost:8083/connectors \
+-H 'Accept: */*' \
+-H 'Content-Type: application/json' \
+-d '{
+"name": "file_sink_connector",
+"config": {
+"connector.class": "org.apache.kafka.connect.file.FileStreamSinkConnector",
+"topics": "connect_topic",
+"file": "/home/charan/output.txt",
+"value.converter": "org.apache.kafka.connect.storage.StringConverter"
+}
+}'
+
+
+cat /home/charan/output.txt
+
+To delete and check the status of the topic.
+
+curl -X DELETE http://localhost:8083/connectors/file_source_connector
+curl -X DELETE http://localhost:8083/connectors/file_sink_connector
